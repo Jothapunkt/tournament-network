@@ -1,5 +1,6 @@
 import math
 from random import *
+from player import RemotePlayer
 
 class GameSim(object):
 	levels = []
@@ -10,6 +11,8 @@ class GameSim(object):
 	active_level_index = 2
 	vspeed = 6
 	y = 0
+	current_tick = 0
+	block_size = 50
 	
 	def make_levels(self):
 		self.levels = []
@@ -141,8 +144,8 @@ class GameSim(object):
 	Checks if a block is at the given position
 	'''
 	def collides_at_position(self, x, y):
-		x_index = math.floor(x/50)
-		y_index = math.floor(y/50)
+		x_index = math.floor(x/self.block_size)
+		y_index = math.floor(y/self.block_size)
 		
 		#print(str(x_index) + "|" + str(y_index))
 		
@@ -163,7 +166,7 @@ class GameSim(object):
 			return True
 		
 		#bottom-left corner
-		if (self.collides_at_position(p.x, self.y + y.height)):
+		if (self.collides_at_position(p.x, self.y + p.height)):
 			return True
 		#bottom-right corner
 		if (self.collides_at_position(p.x + p.width, self.y + p.height)):
@@ -174,23 +177,62 @@ class GameSim(object):
 	def __init__(self):
 		self.make_levels()
 	
+	def has_survivors(self):
+		all_dead = True
+		for p in self.players:
+			if p.dead is False:
+				all_dead = False
+		return all_dead
+	
 	def tick(self):
+		self.current_tick += 1
+		print(self.current_tick)
+		
 		#Make game data
-		game_data = []
+		game_data = {}
+		game_data["inputs"] = []
 		
-		min_row = math.floor(self.y/50)
+		min_row = math.floor(self.y/self.block_size)
+		game_data["board_width"] = 500
 		
+		#Append 5 rows of blocks as inputs
 		for i in range(5):
-			
+			if ((min_row + i) >= len(self.active_level)):
+				for i in range(int(game_data["board_width"]/self.block_size)):
+					game_data["inputs"].append(1)
+			else:
+				row = self.active_level[min_row + i]
+				for block in row:
+					if block:
+						game_data["inputs"].append(1)
+					else:
+						game_data["inputs"].append(0)
 		
+		game_data["inputs"].append((self.y % self.block_size)/self.block_size)
 		
-		#Execute player movement
-		
+		#Execute player movement		
+		for p in self.players:
+			if (p.dead is False):
+				p.tick(game_data)
 		
 		#Check player collision
-		
-		
+		for p in self.players:
+			if (p.dead is False):	
+				if (self.collides(p)):
+					p.dead = True
+					self.dead_players.append(p)
+					
+		#Check for surviving players
+		if self.has_survivors():
+			print("All players are dead")
+		else:
+			print("There are survivors")
+			
+		#Move field
+		self.y += self.vspeed
 		
 	def make_players(self, count):
 		self.players = []
+		for i in range(count):
+			self.players.append(RemotePlayer())
 		

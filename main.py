@@ -1,7 +1,16 @@
 from gamesim import GameSim
 from network import Network
+from player import RemotePlayer
 
 game = GameSim()
+r_player = RemotePlayer()
+r_player.x = 200
+
+game.players.append(r_player)
+
+while(game.has_survivors):
+	game.tick()
+
 
 print("0,0")
 print(game.collides_at_position(0,0))
@@ -20,3 +29,4 @@ print(game.collides_at_position(400,520))
 
 print("300,520") #true
 print(game.collides_at_position(300,520))
+
