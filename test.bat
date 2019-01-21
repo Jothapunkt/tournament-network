@@ -1,4 +1,4 @@
 @ECHO OFF
 
-python network.py
+python main.py
 PAUSE
