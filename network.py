@@ -42,16 +42,34 @@ class Network(object):
 	"""
 	def calcNetwork(self):
 		lastResult = self.inputs
+		#print("Number of inputs: " + str(len(self.inputs)))
+		#print(self.inputs)
+		
 		for layer in self.layers:
 			currentResult = []
 			for node in layer:
 				sum = 0
 				for i in range(len(lastResult)):
+					#print(str(i)+"/"+str(len(lastResult)-1))
 					sum += (lastResult[i] * node["weights"][i])
 				sum -= node["bias"]
 				currentResult.append(self.sig(sum))
 			lastResult = currentResult
+			#print("lastResult" + str(lastResult))
 		return lastResult
+		
+	def print_net(self):
+		print("--- Network Print ---")
+		print("Inputs: " + str(self.inputs))
+		
+		for lnum,layer in enumerate(self.layers):
+			print("Layer " + str(lnum) + ": " + str(len(layer)) + " Nodes")
+			for nnum, node in enumerate(layer):
+				weightsum = 0
+				for weight in node["weights"]:
+					weightsum += weight
+				print("[" + str(node["bias"]) + ", " + str(weightsum) + "]")
+			
 
 if __name__ == "__main__":
 	print("Running")

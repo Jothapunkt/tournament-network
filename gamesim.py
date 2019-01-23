@@ -1,8 +1,11 @@
 import math
 from random import *
 from player import RemotePlayer
+from mutator import Mutator
+import copy
 
 class GameSim(object):
+	mutator = Mutator()
 	levels = []
 	players = []
 	dead_players = []
@@ -13,6 +16,12 @@ class GameSim(object):
 	y = 0
 	current_tick = 0
 	block_size = 50
+	board_width = 500
+	
+	def train(self, max_gen):
+		self.gen = 0
+		while(self.gen < max_gen):
+			self.tick()
 	
 	def make_levels(self):
 		self.levels = []
@@ -147,8 +156,6 @@ class GameSim(object):
 		x_index = math.floor(x/self.block_size)
 		y_index = math.floor(y/self.block_size)
 		
-		#print(str(x_index) + "|" + str(y_index))
-		
 		if (x_index < 0 or y_index < 0):
 			return True
 			
@@ -180,20 +187,20 @@ class GameSim(object):
 	def has_survivors(self):
 		all_dead = True
 		for p in self.players:
-			if p.dead is False:
+			if not p.dead:
 				all_dead = False
-		return all_dead
+		return (not all_dead)
 	
 	def tick(self):
 		self.current_tick += 1
-		print(self.current_tick)
+		#print(self.current_tick)
 		
 		#Make game data
 		game_data = {}
 		game_data["inputs"] = []
 		
 		min_row = math.floor(self.y/self.block_size)
-		game_data["board_width"] = 500
+		game_data["board_width"] = self.board_width
 		
 		#Append 5 rows of blocks as inputs
 		for i in range(5):
@@ -219,20 +226,143 @@ class GameSim(object):
 		for p in self.players:
 			if (p.dead is False):	
 				if (self.collides(p)):
+					p.score = self.score(p)
 					p.dead = True
-					self.dead_players.append(p)
-					
+					self.dead_players.append(p)					
 		#Check for surviving players
-		if self.has_survivors():
-			print("All players are dead")
-		else:
-			print("There are survivors")
+		if not self.has_survivors():
+			self.next_gen()
 			
 		#Move field
 		self.y += self.vspeed
+	
+	def sort_players(self, players):
+		done = False
+		while not done:
+			done = True
+			for index in range(len(players) - 1):
+				if players[index].score < players[index+1].score:
+					#Swap players
+					done = False
+					buffer_player = players[index]
+					players[index] = players[index+1]
+					players[index+1] = buffer_player
+		return players
 		
-	def make_players(self, count):
+	
+	def next_gen(self):
+		self.gen += 1
+		old_players = self.sort_players(self.players)
+		
+		population_size = len(old_players)
+		
 		self.players = []
-		for i in range(count):
+		
+		#Keep best candidate
+		self.players.append(old_players[0])
+		
+		#Append random players
+		while(len(self.players) < 0.2*len(old_players)):
 			self.players.append(RemotePlayer())
 		
+		weights = []
+		for old_p_index,old_p in enumerate(old_players):
+			w = (1 / ((old_p_index + 1) * (old_p_index + 1)))
+			weights.append(w)
+		
+		#Fill rest of slots with mutated versions of old players
+		#Selection of players to mutate is made via a weighted pick. Better players have far better chances to be picked
+		while(len(self.players) < population_size):
+			to_mutate = old_players[self.weighted_pick(weights)]
+			self.players.append(self.mutate_player(to_mutate))
+		
+		scores = []
+		for p in old_players:
+			scores.append(p.score)
+		print(scores)
+		
+		self.restart_level()
+		
+	def restart_level(self):
+		self.y = 0
+		startX = 150
+		self.current_tick = 0
+		self.dead_players = []
+		
+		for player in self.players:
+			player.dead = False
+			player.x = startX
+	
+	def mutate_player(self, p):
+		new_p = copy.deepcopy(p)
+		new_p.controller = self.mutator.mutate(new_p.controller)
+		return new_p
+			
+	def players_alive(self):
+		sum = 0
+		for p in self.players:
+			if not p.dead:
+				sum += 1
+		return sum
+	
+	def players_dead(self):
+		sum = 0
+		for p in self.players:
+			if p.dead:
+				sum += 1
+		return sum
+		
+	def weighted_pick(self, weights):
+		sum = 0
+		for weight in weights:
+			sum += weight
+		r = random() * sum
+		
+		index = 0
+		weight_sum = weights[0]
+		while(weight_sum < r):
+			index += 1
+			weight_sum += weights[index]
+		return index
+		
+	def score(self, p):
+		#Scores players fitness by how long they survived and how far they were from the nearest edge
+		s = self.current_tick * 1000
+		x_buffer = p.x
+		
+		dist_left = 999
+		dist_right = 999
+		
+		#Find nearest edge to the left. If no edge is found, dist_left remains at 999
+		while(self.collides(p) and p.x >= 0):
+			p.x -= p.hspeed
+		
+		if not self.collides(p):
+			dist_left = x_buffer - p.x
+		
+		p.x = x_buffer #Reset x
+		
+		#Find nearest edge to the left. If no edge is found, dist_left remains at 999
+		while(self.collides(p) and p.x <= self.board_width - self.block_size):
+			p.x += p.hspeed
+		
+		if not self.collides(p):
+			dist_right = p.x - x_buffer
+		
+		p.x = x_buffer
+		
+		#The smaller of the two distances is used in final score
+		dist = dist_right
+		if (dist_left < dist_right):
+			dist = dist_left
+		
+		print("Dead: " + str(p.id))
+		return (s - dist)	
+		
+	def make_players(self, count):
+		if (count < 1):
+			return
+		self.players = []
+		for i in range(count):
+			rem = RemotePlayer()
+			self.players.append(rem)
