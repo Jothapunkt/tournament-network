@@ -3,8 +3,9 @@ from random import *
 import copy
 
 class Mutator(object):
-	mutation_probability = 0.1
-	mutation_strength = 0.2
+	def __init__(self):
+		mutation_probability = 0.1
+		mutation_strength = 0.2
 	
 	def random_range(self, min, max):
 		return(min + (random() * (max - min)))

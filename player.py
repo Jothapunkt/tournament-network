@@ -3,16 +3,17 @@ from random import *
 import math
 
 class RemotePlayer(object):
-	score = 0
-	x = 150
-	hspeed = 6
-	width = 30
-	height = 30
-	dead = False
-	id = math.floor(random() * 100000)
-	
-	controller = Network()
-	controller.createNet(5,3)
+	def __init__(self):
+		score = 0
+		x = 150
+		hspeed = 6
+		width = 30
+		height = 30
+		dead = False
+		id = math.floor(random() * 100000)
+		
+		controller = Network()
+		controller.createNet(5,3)
 	
 	def tick(self, game_data):
 		inputs = []

@@ -2,9 +2,10 @@ from math import exp
 from random import *
 
 class Network(object):
-	inputs = []
-	inputLength = 52
-	layers = []
+	def __init__(self):
+		inputs = []
+		inputLength = 52
+		layers = []
 	
 	def createNet(self, *layerLengths):
 		self.layers = []

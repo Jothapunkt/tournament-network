@@ -5,18 +5,19 @@ from mutator import Mutator
 import copy
 
 class GameSim(object):
-	mutator = Mutator()
-	levels = []
-	players = []
-	dead_players = []
-	gen = 0
-	active_level = []
-	active_level_index = 2
-	vspeed = 6
-	y = 0
-	current_tick = 0
-	block_size = 50
-	board_width = 500
+	def __init__(self):
+		mutator = Mutator()
+		levels = []
+		players = []
+		dead_players = []
+		gen = 0
+		active_level = []
+		active_level_index = 2
+		vspeed = 6
+		y = 0
+		current_tick = 0
+		block_size = 50
+		board_width = 500
 	
 	def train(self, max_gen):
 		self.gen = 0
