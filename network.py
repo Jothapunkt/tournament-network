@@ -3,9 +3,9 @@ from random import *
 
 class Network(object):
 	def __init__(self):
-		inputs = []
-		inputLength = 52
-		layers = []
+		self.inputs = []
+		self.inputLength = 52
+		self.layers = []
 	
 	def createNet(self, *layerLengths):
 		self.layers = []

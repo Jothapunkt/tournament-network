@@ -4,16 +4,16 @@ import math
 
 class RemotePlayer(object):
 	def __init__(self):
-		score = 0
-		x = 150
-		hspeed = 6
-		width = 30
-		height = 30
-		dead = False
-		id = math.floor(random() * 100000)
+		self.score = 0
+		self.x = 150
+		self.hspeed = 6
+		self.width = 30
+		self.height = 30
+		self.dead = False
+		self.id = math.floor(random() * 100000)
 		
-		controller = Network()
-		controller.createNet(5,3)
+		self.controller = Network()
+		self.controller.createNet(5,3)
 	
 	def tick(self, game_data):
 		inputs = []

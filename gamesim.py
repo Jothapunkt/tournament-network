@@ -6,25 +6,19 @@ import copy
 
 class GameSim(object):
 	def __init__(self):
-		mutator = Mutator()
-		levels = []
-		players = []
-		dead_players = []
-		gen = 0
-		active_level = []
-		active_level_index = 2
-		vspeed = 6
-		y = 0
-		current_tick = 0
-		block_size = 50
-		board_width = 500
-	
-	def train(self, max_gen):
+		self.mutator = Mutator()
+		self.levels = []
+		self.players = []
+		self.dead_players = []
 		self.gen = 0
-		while(self.gen < max_gen):
-			self.tick()
-	
-	def make_levels(self):
+		self.active_level = []
+		self.active_level_index = 2
+		self.vspeed = 6
+		self.y = 0
+		self.current_tick = 0
+		self.block_size = 50
+		self.board_width = 500
+
 		self.levels = []
 		
 		l1 = []
@@ -150,6 +144,12 @@ class GameSim(object):
 		self.levels.append(terrain_table3)
 		
 		self.active_level = self.levels[self.active_level_index]
+		
+	def train(self, max_gen):
+		self.gen = 0
+		while(self.gen < max_gen):
+			self.tick()
+			
 	'''
 	Checks if a block is at the given position
 	'''
@@ -181,9 +181,6 @@ class GameSim(object):
 			return True
 		
 		return False
-		
-	def __init__(self):
-		self.make_levels()
 	
 	def has_survivors(self):
 		all_dead = True
@@ -357,7 +354,7 @@ class GameSim(object):
 		if (dist_left < dist_right):
 			dist = dist_left
 		
-		print("Dead: " + str(p.id))
+		#print("Dead: " + str(p.id))
 		return (s - dist)	
 		
 	def make_players(self, count):
