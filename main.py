@@ -7,7 +7,7 @@ import copy
 
 game = GameSim()
 game.make_players(10)
-game.train(1000)
-game.players[0].export_player(1000)
+game.train(100)
+game.players[0].export_player()
 
 

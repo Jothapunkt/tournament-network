@@ -162,7 +162,7 @@ class GameSim(object):
 		while(self.gen < max_gen and self.players[0].score < self.max_score):
 			self.tick()
 		
-		return self.players[0].max_score
+		return self.players[0].score
 			
 	def calc_max_score(self):
 		# Find the first impassable row, which is the last row that can be reached (Assuming the level is built properly, so there are no impassable obstacles beforehand)
@@ -313,6 +313,8 @@ class GameSim(object):
 			for p in old_players:
 				scores.append(p.score)
 			print("Gen #" + str(self.gen)+ ": " + str(scores))
+			if (self.gen%500==0):
+				self.players[0].export_player()
 		
 		self.restart_level()
 		

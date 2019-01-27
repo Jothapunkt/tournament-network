@@ -7,8 +7,17 @@ import copy
 
 game = GameSim()
 game.make_players(10)
-game.players[0].import_player("networks/128988_95931.network")
-game.train(1000)
-game.players[0].export_player()
+
+base = "networks/"
+dir = ""
+name = "203964_85377"
+
+gens = 2000
+
+game.players[0].import_player(base + dir + name + ".network")
+game.train(gens)
+
+if (gens%500 != 0):
+	game.players[0].export_player()
 
 

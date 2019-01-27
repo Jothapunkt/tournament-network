@@ -1,8 +1,8 @@
 .screen {
-	width: 500px;
+	width: 1000px;
 	height: 500px;
 	background-color: #666666;
-	display: inline-block;
+	display: block;
 }
 
 .output-container {

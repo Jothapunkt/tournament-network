@@ -1,10 +1,22 @@
-var player
-
 function startImport() {
+	if (typeof player != "undefined") {
+		player.kill()
+	}
+	
 	var str = document.getElementById("network-import").innerText
 	
 	player = remotePlayer()
 	player.controller.importNetwork(str)
+	
+	tickHandler.beginTick()
+}
+
+function spawnPlayer() {
+	if (typeof player != "undefined") {
+		player.kill()
+	}
+	
+	player = Player()
 	
 	tickHandler.beginTick()
 }

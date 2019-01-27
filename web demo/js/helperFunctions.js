@@ -1,4 +1,5 @@
 var keyDown = {};
+var player;
 
 window.onkeydown = function(e) { keyDown[e.key] = true;}
 window.onkeyup = function(e) { keyDown[e.key] = false;}
