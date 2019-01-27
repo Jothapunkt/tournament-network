@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+	<head>
+		<link href="style.css" rel="stylesheet"/>
+		<link href="testStyle.css" rel="stylesheet"/>
+	</head>
+	<body>
+
+		<div class="table-container">
+			<p class="fail-header" id="fail-header">Failed Tests (2)</p>
+			<table class="fail-table" id="fail-table">
+					<tr><td><b>failingTest</b> This test always fails</td></tr>
+					<tr><td><b>otherFailingTest</b> This test, too, always fails</td></tr>
+				</table>
+		</div>
+
+		<div class="table-container">
+			<p class="pass-header" id="pass-header">Passed Tests (2)</p>
+			<table class="pass-table" id="pass-table">
+				<tr><td><b>passingTest</b> This test always passes</td></tr>
+				<tr><td><b>otherPassingTest</b> This test, too, always passes</td></tr>
+			</table>
+	</div>
+
+	<div class="testlog-container">
+		<table class="testlog-table" id="testlog-table"></table>
+	</div>
+
+		<canvas class="screen" id="screen" width=500 height=500></canvas>
+
+		<script src="js/helperFunctions.js"></script>
+		<script src="js/canvas.js"></script>
+		<script src="js/tickHandler.js"></script>
+		<script src="js/controller.js"></script>
+		<script src="js/player.js"></script>
+		<script src="js/remotePlayer.js"></script>
+		<script src="js/obstacles.js"></script>
+		<script src="js/input.js"></script>
+		<script src="js/network.js"></script>
+		<script src="js/selectionManager.js"></script>
+		<script src="js/script.js"></script>
+
+		<script>
+			tickHandler.stopTick();
+			canvas.style.visibility = "hidden";
+			canvas.height = 0;
+			canvas.style.height = 0;
+		</script>
+
+		<script src="tests/testManager.js"></script>
+
+		<script src="tests/networkTest.js"></script>
+		<script src="tests/remotePlayerTest.js"></script>
+		<script src="tests/obstaclesTest.js"></script>
+		<script src="tests/miscTest.js"></script>
+
+		<script src="tests/executeTests.js"></script>
+	</body>

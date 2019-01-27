@@ -9,15 +9,18 @@ class GameSim(object):
 		self.mutator = Mutator()
 		self.levels = []
 		self.players = []
+		self.player_width = 30
+		self.player_height = 30
 		self.dead_players = []
 		self.gen = 0
 		self.active_level = []
-		self.active_level_index = 2
+		self.active_level_index = 1
 		self.vspeed = 6
 		self.y = 0
 		self.current_tick = 0
 		self.block_size = 50
 		self.board_width = 500
+		self.max_score = -1
 
 		self.levels = []
 		
@@ -103,6 +106,7 @@ class GameSim(object):
 		l3.append("1000000001");
 		l3.append("1000000001");
 		l3.append("1000000001");
+		l3.append("1000000001");
 		l3.append("1001111111");
 		l3.append("1000000001");
 		l3.append("1000000001");
@@ -145,11 +149,40 @@ class GameSim(object):
 		
 		self.active_level = self.levels[self.active_level_index]
 		
+		self.calc_max_score()
+		
 	def train(self, max_gen):
 		self.gen = 0
-		while(self.gen < max_gen):
+		#No players: Final score will be 0
+		if (len(self.players) < 1):
+			return 0
+		#One player: Final score will be initial score
+		if (len(self.players) < 2):
+			return self.players[0].score
+		while(self.gen < max_gen and self.players[0].score < self.max_score):
 			self.tick()
+		
+		return self.players[0].max_score
 			
+	def calc_max_score(self):
+		# Find the first impassable row, which is the last row that can be reached (Assuming the level is built properly, so there are no impassable obstacles beforehand)
+		rows = len(self.active_level)
+		for (i,row) in enumerate(self.active_level):
+			if (i < rows):
+				is_impassable = True
+				for block in row:
+					if (block is False):
+						is_impassable = False
+				if (is_impassable):
+					rows = i
+		
+		max_ticks = 0
+		temp_y = 0
+		max_y = (rows * self.block_size) - self.player_height
+		while(temp_y < max_y):
+			temp_y += self.vspeed
+			max_ticks += 1
+		self.max_score = (max_ticks * 1000) - 999
 	'''
 	Checks if a block is at the given position
 	'''
@@ -160,15 +193,16 @@ class GameSim(object):
 		if (x_index < 0 or y_index < 0):
 			return True
 			
-		if (y_index > len(self.active_level) or x_index > len(self.active_level[y_index])):
+		if (y_index >= len(self.active_level) or x_index >= len(self.active_level[y_index])):
 			return True
 		
 		return (self.active_level[y_index][x_index])
-		
+	
 	def collides(self, p):
 		#top-left corner
 		if (self.collides_at_position(p.x, self.y)):
 			return True
+			
 		#top-right corner
 		if (self.collides_at_position(p.x + p.width, self.y)):
 			return True
@@ -192,6 +226,9 @@ class GameSim(object):
 	def tick(self):
 		self.current_tick += 1
 		#print(self.current_tick)
+		
+		#Move field
+		self.y += self.vspeed
 		
 		#Make game data
 		game_data = {}
@@ -230,9 +267,6 @@ class GameSim(object):
 		#Check for surviving players
 		if not self.has_survivors():
 			self.next_gen()
-			
-		#Move field
-		self.y += self.vspeed
 	
 	def sort_players(self, players):
 		done = False
@@ -274,10 +308,11 @@ class GameSim(object):
 			to_mutate = old_players[self.weighted_pick(weights)]
 			self.players.append(self.mutate_player(to_mutate))
 		
-		scores = []
-		for p in old_players:
-			scores.append(p.score)
-		print(scores)
+		if (self.gen%10==0):
+			scores = []
+			for p in old_players:
+				scores.append(p.score)
+			print("Gen #" + str(self.gen)+ ": " + str(scores))
 		
 		self.restart_level()
 		
@@ -290,6 +325,7 @@ class GameSim(object):
 		for player in self.players:
 			player.dead = False
 			player.x = startX
+			player.gen += 1
 	
 	def mutate_player(self, p):
 		new_p = copy.deepcopy(p)

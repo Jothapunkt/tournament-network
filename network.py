@@ -70,7 +70,7 @@ class Network(object):
 				for weight in node["weights"]:
 					weightsum += weight
 				print("[" + str(node["bias"]) + ", " + str(weightsum) + "]")
-			
+		
 
 if __name__ == "__main__":
 	print("Running")
