@@ -22,7 +22,7 @@ class Ball(object):
 		self.x = 0.5 * self.board_width
 		self.y = 0.5 * self.board_height
 		
-		self.vspeed = self.minSpeed
+		self.vspeed = 0.3 * self.minSpeed
 		self.hspeed = self.minSpeed
 		
 		if (self.data.get("last_score", "left") == "right"):

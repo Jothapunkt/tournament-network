@@ -71,6 +71,7 @@ class GameSim(object):
 		self.data.get("playerRight").align_right()
 		self.data.get("playerLeft").reset_player()
 		self.data.get("playerRight").reset_player()
+		moves = []
 		
 		while (self.data.get("scoreLeft",0) < score_to_win and self.data.get("scoreRight",0) < score_to_win):
 			self.play_point()

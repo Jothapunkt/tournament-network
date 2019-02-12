@@ -28,7 +28,7 @@ function Ball() {
 		obj.x = 0.5 * window["canvasWidth"]
 		obj.y = 0.5 * window["canvasHeight"]
 		
-		obj.vspeed = obj.minSpeed
+		obj.vspeed = 0.3 * obj.minSpeed
 		obj.hspeed = obj.minSpeed
 		
 		if (lastScore == "right") { obj.hspeed = -obj.hspeed }

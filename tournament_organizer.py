@@ -44,5 +44,29 @@ class Tournament(object):
 					new_players.append(self.players[i+1])
 				self.matches_played += 1
 				i += 2
-				print("Matches played: " + str(self.matches_played) + "/" + str(self.total_players - 1))
+				if (self.matches_played % 20 == 0):
+					print("Matches played: " + str(self.matches_played) + "/" + str(self.total_players - 1))
 			self.players = new_players
+			
+		#Final round
+		if (len(self.players) != 2):
+			print("There are not exactly 2 players for final match: " + str(len(self.players)) + " players left")
+		else:
+			print("-- Finale --")
+			self.data.set("playerLeft", self.players[0])
+			self.data.set("playerRight", self.players[1])
+			
+			winner = self.players[1]
+			second = self.players[0]
+			if (self.game.play_match() == "left"):
+				winner = self.players[0]
+				second = self.players[1]
+			
+			print("Sieger: #" + str(winner.id))
+			print("Stolzer Zweiter: #" + str(second.id))
+			print("Endstand: " + str(self.data.get("scoreLeft")) + " - " + str(self.data.get("scoreRight")) + ". " + str(self.data.get("numberParries",0)) + " mal pariert")
+			
+			winner.export_player()
+			second.export_player()
+			
+			

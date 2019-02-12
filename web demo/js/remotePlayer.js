@@ -41,6 +41,10 @@ function RemotePlayer() {
 		obj.x = window["canvasWidth"] - obj.width
 	}
 	
+	obj.resetPlayer = function() {
+		obj.y = ((0.5 * window["canvasHeight"]) - (0.5 * obj.height))
+	}
+	
 	obj.setKeys = function(up,down) {
 		obj.upKey = up
 		obj.downKey = down
@@ -99,7 +103,6 @@ function RemotePlayer() {
 		}
 		
 		obj.controller.inputs = inputs
-		console.log(obj.controller.inputs)
 		movements = obj.controller.calcNetwork()
 		console.log(movements)
 		

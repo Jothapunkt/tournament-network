@@ -20,7 +20,12 @@ function startGame() {
 	scoreLeft = 0
 	scoreRight = 0
 	
-	tickHandler.beginTick()
+	playerLeft.resetPlayer()
+	playerRight.resetPlayer()
+	
+	if (paused) {
+		togglePause()
+	}
 }
 
 function togglePause() {

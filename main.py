@@ -7,4 +7,4 @@ from tournament_organizer import Tournament
 import copy
 
 tournament = Tournament()
-tournament.random_tournament(10)
+tournament.random_tournament(13)
