@@ -12,7 +12,7 @@
 		</div>
 		
 		<div class="output-container">
-			<div class="top-network-output" id="network-import-left" contenteditable="true">
+			<div class="top-network-output" id="network-import-right" contenteditable="true">
 				Network data for right AI
 			</div>
 		</div>
@@ -20,20 +20,24 @@
 		<div class="output-container">
 			<div class="output-header">
 				<button onclick="startImportLeft()">Import left AI</button>
-				<button onclick="startImportLeft()">Import right AI</button>
+				<button onclick="startImportRight()">Import right AI</button>
 			</div>
 			<div class="output-header">
-				<button onclick="spawnPlayer()">Spawn Player (left)</button>
-				<button onclick="spawnPlayer()">Spawn Player (right)</button>
+				<button onclick="spawnPlayerLeft()">Spawn Player (left)</button>
+				<button onclick="spawnPlayerRight()">Spawn Player (right)</button>
 			</div>
 			<button onclick="startGame()">Start Match</button>
+			<button id="pause-button" onclick="togglePause()">Pause</button>
+			<button id="debug-button" onclick="debug()">Debug</button>
 		</div>
 
 		<script src="js/helperFunctions.js"></script>
 		<script src="js/canvas.js"></script>
 		<script src="js/tickHandler.js"></script>
+		<script src="js/scoreDrawer.js"></script>
 		<script src="js/network.js"></script>
 		<script src="js/remotePlayer.js"></script>
 		<script src="js/player.js"></script>
+		<script src="js/ball.js"></script>
 		<script src="js/script.js"></script>
 	</body>

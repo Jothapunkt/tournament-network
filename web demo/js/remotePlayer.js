@@ -1,90 +1,121 @@
-function remotePlayer() {
+function RemotePlayer() {
 	var obj = {}
-	obj.startX = 150
-	obj.x = obj.startX
-	obj.y = 0
+	
+	obj.width = 10
+	obj.height = 75
+	
+	obj.x = 0
+	obj.y = ((0.5 * window["canvasHeight"]) - (0.5 * obj.height))
 	
 	obj.ticksAlive = 0
 	
-	obj.width = 30
-	obj.height = 30
-	
-	obj.rcol = Math.round(random(20,230));
-	obj.gcol = Math.round(random(20,230));
-	obj.bcol = Math.round(random(20,230));
+	obj.upKey = "w"
+	obj.downKey = "s"
 
-	obj.color = "rgb(" + obj.rcol + "," + obj.gcol + "," + obj.bcol + ")";
+	obj.color = "white";
 	
-	obj.hspeed = 6
-	obj.vspeed = 6
+	obj.lastMove = "neutral"
 	
-	tickHandler.register(obj)
+	obj.vspeed = 4
 	
 	obj.controller = networkClass()
 	
+	tickHandler.register(obj)
+	
 	obj.kill = function() {
 		tickHandler.unregister(obj)
-		tickHandler.stopTick()
-		
 		obj.color = "crimson"
-		console.log("Dead at (" + obj.x + "/" + obj.y + "); Tick #" + obj.ticksAlive)
 	}
 	
 	obj.tick = function() {
-		if (obj.ticksAlive == 0) {
-			terrain.firstPlayerTick = tickHandler.tickCount
-		}
 		obj.ticksAlive++
 		obj.move()
-		if(terrain.hasCollision(obj)) {
-			obj.kill()
-		}
 		obj.draw()
+	}
+	
+	obj.alignLeft = function() {
+		obj.x = 0
+	}
+	
+	obj.alignRight = function() {
+		obj.x = window["canvasWidth"] - obj.width
+	}
+	
+	obj.setKeys = function(up,down) {
+		obj.upKey = up
+		obj.downKey = down
 	}
 	
 	obj.draw = function() {
 		ctx.save();
 		ctx.fillStyle = obj.color;
 		ctx.beginPath();
-		ctx.rect(obj.x,50,obj.width,obj.height);
+		ctx.rect(obj.x,obj.y,obj.width,obj.height);
 		ctx.fill();
 		ctx.restore();
 	}
 	
-	obj.makeInput = function() {
-		var newInput = []
-		var minY = Math.floor(obj.y/terrain.blockHeight);
-		for (var i = 0; i < 5; i++) {
-			if (minY + i >= terrain.boolTable.length) {
-				newInput.push(1,1,1,1,1,1,1,1,1,1)
-			} else {
-				terrain.boolTable[minY+i].forEach(function(isBlock) {
-					if(isBlock){
-						newInput.push(1)
-					} else {
-						newInput.push(0)
-					}
-				})
-			}
+	obj.makeInputLeft = function() { //Paddle y, ball position, ball velocity and opponent y
+		var inputs = []
+		inputs.push(obj.y/canvasHeight)
+		inputs.push(ball.x/canvasWidth)
+		inputs.push(ball.y/canvasHeight)
+		inputs.push(ball.hspeed)
+		inputs.push(ball.vspeed)
+		
+		if (playerLeft === obj) {
+			inputs.push(playerRight.y/canvasHeight)
+		} else {
+			inputs.push(playerLeft.y/canvasHeight)
 		}
 		
-		newInput.push((obj.y%50)/50)
-		newInput.push(obj.x/(10*terrain.blockWidth))
+		return inputs
+	}
+	
+	obj.makeInputRight = function() { //Ball x and hspeed are inverted
+		var inputs = []
+		inputs.push(obj.y/canvasHeight)
+		inputs.push((canvasWidth - ball.x)/canvasWidth)
+		inputs.push(ball.y/canvasHeight)
+		inputs.push(-ball.hspeed)
+		inputs.push(ball.vspeed)
 		
-		obj.controller.inputs = newInput
+		if (playerLeft === obj) {
+			inputs.push(playerRight.y/canvasHeight)
+		} else {
+			inputs.push(playerLeft.y/canvasHeight)
+		}
+		
+		return inputs
 	}
 	
 	obj.move = function() {
-		obj.makeInput()
+		obj.lastMove = "neutral"
+		var vdiff = 0
+		
+		inputs = obj.makeInputLeft()
+		if (playerRight == obj) {
+			inputs = obj.makeInputRight()
+		}
+		
+		obj.controller.inputs = inputs
+		console.log(obj.controller.inputs)
 		movements = obj.controller.calcNetwork()
 		console.log(movements)
 		
-		hdiff = 0
-		if (movements[0] > movements[1] && movements[0] >= movements[2]) { hdiff = -obj.hspeed }
-		if (movements[2] > movements[1] && movements[2] >= movements[0]) { hdiff = obj.hspeed }
-			
-		obj.x += hdiff
-		obj.y += obj.vspeed
+		if (movements[0] > movements[1] && movements[0] >= movements[2]) {
+			vdiff = -obj.vspeed
+			obj.lastMove = "up"
+		}
+		if (movements[2] > movements[1] && movements[2] > movements[0]) {
+			vdiff = obj.vspeed
+			obj.lastMove = "down"
+		}
+		
+		obj.y += vdiff
+		
+		if (obj.y < 0) { obj.y = 0 }
+		if (obj.y > window["canvasHeight"] - obj.height) { obj.y = window["canvasHeight"] - obj.height }
 	}
 	
 	return obj

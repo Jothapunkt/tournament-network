@@ -22,6 +22,7 @@ function networkClass() {
 			currentResult.push(obj.sigmoidFunction(sum))
 		})
 		lastResult = currentResult
+		console.log("Layer: " + lastResult)
 	})
 	return lastResult
   }

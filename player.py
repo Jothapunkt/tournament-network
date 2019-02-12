@@ -6,34 +6,54 @@ import json
 class RemotePlayer(object):
 	def __init__(self):
 		self.score = 0
-		self.x = 150
-		self.hspeed = 6
-		self.width = 30
-		self.height = 30
+		self.x = 0
+		
+		self.vspeed = 4
+		self.width = 10
+		self.height = 75
 		self.dead = False
 		self.id = math.floor(random() * 100000)
 		
-		self.controller = Network()
-		self.controller.createNet(20,10,10,3)
-		self.gen = 0
-	
-	def tick(self, game_data):
-		inputs = []
-		for input in game_data["inputs"]:
-			inputs.append(input)
-			
-		inputs.append(self.x / game_data["board_width"])
+		self.board_width = 1000
+		self.board_height = 500
 		
+		self.y = 0.5 * (self.board_height - self.height)
+		
+		self.controller = Network()
+		self.controller.createNet(10,10,10,3)
+		self.gen = 0
+		
+		self.last_move = "neutral"
+	
+	def tick(self, inputs):
 		self.controller.setInputs(inputs)
 		movements = self.controller.calcNetwork()
 		
-		hdiff = 0
+		vdiff = 0
+		self.last_move = "neutral"
+		
 		if (movements[0] > movements[1] and movements[0] >= movements[2]):
-			hdiff = -self.hspeed
-		if (movements[2] > movements[1] and movements[2] >= movements[0]):
-			hdiff = self.hspeed
+			vdiff = -self.vspeed
+			self.last_move = "up"
+		if (movements[2] > movements[1] and movements[2] > movements[0]):
+			vdiff = self.vspeed
+			self.last_move = "down"
 			
-		self.x += hdiff
+		self.y += vdiff
+		
+		if (self.y < 0):
+			self.y = 0
+		if (self.y > (self.board_height - self.height)):
+			self.y = self.board_height - self.height
+		
+	def align_left(self):
+		self.x = 0
+		
+	def align_right(self):
+		self.x = self.board_width - self.width
+	
+	def reset_player(self):
+		self.y = 0.5 * (self.board_height - self.height)
 		
 	def export_player(self):
 		print("Exporting player #" + str(self.id) + " with final score of " + str(self.score))

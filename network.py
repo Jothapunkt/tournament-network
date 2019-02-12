@@ -4,7 +4,7 @@ from random import *
 class Network(object):
 	def __init__(self):
 		self.inputs = []
-		self.inputLength = 52
+		self.inputLength = 6
 		self.layers = []
 	
 	def createNet(self, *layerLengths):
@@ -43,20 +43,16 @@ class Network(object):
 	"""
 	def calcNetwork(self):
 		lastResult = self.inputs
-		#print("Number of inputs: " + str(len(self.inputs)))
-		#print(self.inputs)
 		
 		for layer in self.layers:
 			currentResult = []
 			for node in layer:
 				sum = 0
-				for i in range(len(lastResult)):
-					#print(str(i)+"/"+str(len(lastResult)-1))
+				for i in range(len(node["weights"])):
 					sum += (lastResult[i] * node["weights"][i])
 				sum -= node["bias"]
 				currentResult.append(self.sig(sum))
 			lastResult = currentResult
-			#print("lastResult" + str(lastResult))
 		return lastResult
 		
 	def print_net(self):
@@ -70,21 +66,3 @@ class Network(object):
 				for weight in node["weights"]:
 					weightsum += weight
 				print("[" + str(node["bias"]) + ", " + str(weightsum) + "]")
-		
-
-if __name__ == "__main__":
-	print("Running")
-	net = Network()
-	inputs = []
-	inputs.append(random())
-	inputs.append(random())
-	for i in range(50):
-		if (random() > 0.5):
-			inputs.append(1)
-		else:
-			inputs.append(0)
-	net.setInputs(inputs)
-	net.createNet(5, 3)
-	n = net.createRandomNode(5)
-	print(n["bias"])
-	print(net.calcNetwork())

@@ -1,123 +1,87 @@
-function startImport() {
-	if (typeof player != "undefined") {
-		player.kill()
+var playerLeft
+var playerRight
+
+var ball = Ball()
+
+var paused = false
+
+var scoreLeft = 0
+var scoreRight = 0
+var lastScore = "left"
+
+var scoreDraw = scoreDrawer()
+
+function startGame() {
+	if (typeof ball != "undefined") {
+		ball.kill()
 	}
 	
-	var str = document.getElementById("network-import").innerText
-	
-	player = remotePlayer()
-	player.controller.importNetwork(str)
+	ball = Ball()
+	scoreLeft = 0
+	scoreRight = 0
 	
 	tickHandler.beginTick()
 }
 
-function spawnPlayer() {
-	if (typeof player != "undefined") {
-		player.kill()
+function togglePause() {
+	paused = !paused
+	if (paused) {
+		tickHandler.stopTick()
+		document.getElementById("pause-button").innerText = "Resume"
+	} else {
+		tickHandler.stopTick()
+		tickHandler.beginTick()
+		document.getElementById("pause-button").innerText = "Pause"
 	}
-	
-	player = Player()
-	
-	tickHandler.beginTick()
 }
 
-var manualControl = false;
+function startImportLeft() {
+	if (typeof playerLeft != "undefined") {
+		playerLeft.kill()
+	}
+	
+	var str = document.getElementById("network-import-left").innerText
+	
+	playerLeft = RemotePlayer()
+	playerLeft.controller.importNetwork(str)
+	playerLeft.alignLeft()
+}
 
-var terrainTable1 = terrainTableClass();
+function spawnPlayerLeft() {
+	if (typeof playerLeft != "undefined") {
+		playerLeft.kill()
+	}
+	
+	playerLeft = Player()
+	playerLeft.setKeys("w","s")
+	playerLeft.alignLeft()
+}
 
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1100000011");
-terrainTable1.rows.push("1110000111");
-terrainTable1.rows.push("1110001111");
-terrainTable1.rows.push("1110011111");
-terrainTable1.rows.push("1110011111");
-terrainTable1.rows.push("1111001111");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1111101111");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1111011111");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1000000001");
-terrainTable1.rows.push("1000100001");
-terrainTable1.rows.push("1111111111");
+function startImportRight() {
+	if (typeof playerRight != "undefined") {
+		playerRight.kill()
+	}
+	
+	var str = document.getElementById("network-import-right").innerText
+	
+	playerRight = RemotePlayer()
+	playerRight.controller.importNetwork(str)
+	playerRight.alignRight()
+}
 
-var terrainTable2 =  terrainTableClass();
+function spawnPlayerRight() {
+	if (typeof playerRight != "undefined") {
+		playerRight.kill()
+	}
+	
+	playerRight = Player()
+	playerRight.setKeys("o","l")
+	playerRight.alignRight()
+}
 
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000100001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1110000111");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1010000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1111110011");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1100000011");
-terrainTable2.rows.push("1110000111");
-terrainTable2.rows.push("1110001111");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1110011111");
-terrainTable2.rows.push("1110011111");
-terrainTable2.rows.push("1111001111");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1111101111");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1111011111");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000000001");
-terrainTable2.rows.push("1000100001");
-terrainTable2.rows.push("1111111111");
+function debug() {
+	
+}
 
-var terrainTable3 =  terrainTableClass();
-
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1111011111");
-terrainTable3.rows.push("1111011111");
-terrainTable3.rows.push("1111011111");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1111111001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1001111111");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1000000001");
-terrainTable3.rows.push("1110000001");
-terrainTable3.rows.push("1111111111");
-
-var activeTerrainTable = terrainTable2;
-
-var terrain = terrainClass(activeTerrainTable);
-
-tickHandler.stopTick()
-tickHandler.tick()
+spawnPlayerLeft()
+spawnPlayerRight()

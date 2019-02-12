@@ -44,7 +44,7 @@ function tickHandlerClass() {
 
 
 	//Milliseconds between ticks
-	obj.tickInterval = 60;
+	obj.tickInterval = 20;
 
 	obj.beginTick = function() {
 		window.clearInterval(obj.intervalID);
