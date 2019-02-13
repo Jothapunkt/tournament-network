@@ -58,7 +58,7 @@ class Tournament(object):
 			
 			winner = self.players[1]
 			second = self.players[0]
-			if (self.game.play_match() == "left"):
+			if (self.game.play_match(record=True) == "left"):
 				winner = self.players[0]
 				second = self.players[1]
 			

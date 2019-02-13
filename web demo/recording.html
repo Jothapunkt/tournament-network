@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+	<head>
+		<link href="style.css" rel="stylesheet"/>
+	</head>
+	<body>
+		<canvas class="screen" width=1000 height=500></canvas>
+
+		<div class="output-container">
+			<div class="top-network-output" id="recording-data" contenteditable="true">
+				Recording data
+			</div>
+		</div>
+		
+		<div class="output-container">
+			<button id="import-button" onclick="importRecording()">Import Recording</button>
+			<button id="pause-button" onclick="togglePause()">Pause</button>
+		</div>
+		
+		<script src="js/helperFunctions.js"></script>
+		<script src="js/canvas.js"></script>
+		<script src="js/tickHandler.js"></script>
+		<script src="js/scoreDrawer.js"></script>
+		<script src="js/recording.js"></script>
+	</body>

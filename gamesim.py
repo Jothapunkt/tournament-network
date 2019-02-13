@@ -5,6 +5,7 @@ from mutator import Mutator
 import copy
 from game_data import *
 from ball import *
+import time
 
 class GameSim(object):
 	def __init__(self):
@@ -18,14 +19,25 @@ class GameSim(object):
 		self.data.set("lastScore", "left")
 		self.board_width = 1000
 		self.board_height = 500
+		self.recording = []
 		
-	def play_point(self,max_ticks=6000): #Max 120s per point at 50tps
+	def play_point(self,max_ticks=6000,record=False): #Max 120s per point at 50tps
 		current_tick = 0
 		initalScoreLeft = self.data.get("scoreLeft",0)
 		initialScoreRight = self.data.get("scoreRight",0) 
 		while(current_tick < max_ticks and self.data.get("scoreLeft",0) == initalScoreLeft and self.data.get("scoreRight",0)  == initialScoreRight):
 			self.tick()
-			#self.game_info("Tick #" + str(current_tick))
+			if (record):
+				tick_data = []
+				tick_data.append(self.data.get("playerLeft").x)
+				tick_data.append(self.data.get("playerLeft").y)
+				tick_data.append(self.ball.x)
+				tick_data.append(self.ball.y)
+				tick_data.append(self.data.get("playerRight").x)
+				tick_data.append(self.data.get("playerRight").y)
+				tick_data.append(self.data.get("scoreLeft",0))
+				tick_data.append(self.data.get("scoreRight",0))
+				self.recording.append(tick_data)
 			current_tick += 1
 	
 	def game_info(self, extraInfo=""):
@@ -62,7 +74,9 @@ class GameSim(object):
 		self.data.get("playerLeft").export_player()
 		self.data.get("playerRight").export_player()
 	
-	def play_match(self, score_to_win=3):
+	def play_match(self, score_to_win=3, record=False):
+		if (record):
+			self.clear_recording()
 		self.data.set("scoreLeft",0)
 		self.data.set("scoreRight",0)
 		self.data.set("numberParries",0)
@@ -74,12 +88,27 @@ class GameSim(object):
 		moves = []
 		
 		while (self.data.get("scoreLeft",0) < score_to_win and self.data.get("scoreRight",0) < score_to_win):
-			self.play_point()
+			if (record):
+				self.play_point(record=True)
+			else:
+				self.play_point()
+		
+		if (record):
+			print("Saved recording as " + self.export_recording())
 		
 		if (self.data.get("scoreLeft",0) == score_to_win):
 			return "left"
 		else:
 			return "right"
+	
+	def export_recording(self):
+		filename = "recordings/" + str(time.time()) + "_" + str(math.floor(random() * 100000)) + ".recording"
+		with open(filename, "w") as json_file:
+			json.dump(self.recording, json_file)
+		return filename
+
+	def clear_recording(self):
+		self.recording = []
 	
 	def mutate_player(self, p):
 		new_p = copy.deepcopy(p)
