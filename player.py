@@ -20,7 +20,7 @@ class RemotePlayer(object):
 		self.y = 0.5 * (self.board_height - self.height)
 		
 		self.controller = Network()
-		self.controller.createNet(10,10,10,3)
+		self.controller.createNet(15,20,3)
 		self.gen = 0
 		
 		self.last_move = "neutral"

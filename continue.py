@@ -7,4 +7,8 @@ from tournament_organizer import Tournament
 import copy
 
 tournament = Tournament()
-tournament.random_tournament(13)
+
+fname = "networks/usable/" + "16384_51424.network"
+
+tournament.import_tournament(fname, 12)
+

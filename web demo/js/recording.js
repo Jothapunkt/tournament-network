@@ -19,6 +19,8 @@ function Playback(str) {
 	obj.playerRightY = 0
 	obj.ballX = 0
 	obj.ballY = 0
+	obj.ball2X = 0
+	obj.ball2Y = 0
 	
 	obj.color = "white";
 	
@@ -59,11 +61,19 @@ function Playback(str) {
 		ctx.fill();
 		ctx.restore();
 		
-		//Draw ball
+		//Draw ball 1
 		ctx.save();
 		ctx.fillStyle = obj.color;
 		ctx.beginPath();
 		ctx.arc(obj.ballX,obj.ballY,obj.ballRadius,0,2 * Math.PI);
+		ctx.fill();
+		ctx.restore();
+		
+		//Draw ball 2
+		ctx.save();
+		ctx.fillStyle = "DodgerBlue";
+		ctx.beginPath();
+		ctx.arc(obj.ball2X,obj.ball2Y,obj.ballRadius,0,2 * Math.PI);
 		ctx.fill();
 		ctx.restore();
 	}
@@ -81,11 +91,14 @@ function Playback(str) {
 		obj.ballX = data[2]
 		obj.ballY = data[3]
 		
-		obj.playerRightX = data[4]
-		obj.playerRightY = data[5]
+		obj.ball2X = data[4]
+		obj.ball2Y = data[5]
 		
-		scoreLeft = data[6]
-		scoreRight = data[7]
+		obj.playerRightX = data[6]
+		obj.playerRightY = data[7]
+		
+		scoreLeft = data[8]
+		scoreRight = data[9]
 	}
 	
 	obj.kill = function() {

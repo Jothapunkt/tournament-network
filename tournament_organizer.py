@@ -16,7 +16,13 @@ class Tournament(object):
 		self.matches_played = 0
 		self.data = GameData()
 		self.game = GameSim()
+		
+	def mutate_player(self, p):
+		new_p = copy.deepcopy(p)
+		new_p.controller = self.mutator.mutate(new_p.controller)
+		return new_p
 	
+	#Creates a tournament of completely randomized players
 	def random_tournament(self,rounds): #rounds is the number of KO rounds played. There are 2^rounds random players in total, e.g. 15
 		self.players = []
 		self.total_players = 2 ** rounds
@@ -30,7 +36,33 @@ class Tournament(object):
 			p.score = self.total_players
 			
 			self.players.append(p)
+			
+		return self.play_tournament()
+	
+	#Creates a tournament of the player imported from disk and mutations of that player
+	def import_tournament(self,filename,rounds):
+		self.players = []
+		self.total_players = 2 ** rounds
+		self.matches_played = 0
 		
+		print("-- Import Tournament --")
+		print("Total players: " + str(self.total_players))
+		
+		p = RemotePlayer()
+		p.import_player(filename)
+		
+		self.players.append(p)
+		while(len(self.players) < self.total_players):
+			self.players.append(self.mutate_player(p))
+			
+		return self.play_tournament()
+	
+	#Creates a tournament of the base player passed and mutations of that player
+	def continue_tournament(self, base_player, rounds):
+		
+		
+		
+	def play_tournament(self):
 		#Non-final rounds
 		while (len(self.players) > 2): 
 			i = 0
@@ -51,6 +83,7 @@ class Tournament(object):
 		#Final round
 		if (len(self.players) != 2):
 			print("There are not exactly 2 players for final match: " + str(len(self.players)) + " players left")
+			return None
 		else:
 			print("-- Finale --")
 			self.data.set("playerLeft", self.players[0])
@@ -68,5 +101,7 @@ class Tournament(object):
 			
 			winner.export_player()
 			second.export_player()
+			
+			return winner
 			
 			

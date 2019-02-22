@@ -13,6 +13,8 @@ class Ball(object):
 		self.speedCapUpper = 100
 		self.speedCapLower = 1
 		
+		self.last_side_scored = "left"
+		
 		self.board_width = 1000
 		self.board_height = 500
 		
@@ -25,7 +27,7 @@ class Ball(object):
 		self.vspeed = 0.3 * self.minSpeed
 		self.hspeed = self.minSpeed
 		
-		if (self.data.get("last_score", "left") == "right"):
+		if (self.last_side_scored == "right"):
 			self.hspeed = -self.hspeed
 	
 	def tick(self):
@@ -58,6 +60,7 @@ class Ball(object):
 			elif (targetX < 0):
 				self.data.set("scoreRight", self.data.get("scoreRight", 0) + 1)
 				self.data.set("lastScore", "right")
+				self.last_side_scored = "right"
 				self.reset_ball()
 			else:
 				self.x = targetX
@@ -74,6 +77,7 @@ class Ball(object):
 			elif (targetX > self.board_width):
 				self.data.set("scoreLeft", self.data.get("scoreLeft", 0) + 1)
 				self.data.set("lastScore", "left")
+				self.last_side_scored = "left"
 				self.reset_ball()
 			else:
 				self.x = targetX
@@ -94,3 +98,10 @@ class Ball(object):
 			self.vspeed = -self.speedCapLower
 		if (self.vspeed < self.speedCapLower and self.vspeed > 0):
 			self.vspeed = self.speedCapLower
+			
+class SecondBall(Ball):
+	def reset_ball(self):
+		super().reset_ball()
+		
+		if (self.data.get("scoreLeft",0) == 0 and self.data.get("scoreRight",0) == 0):
+			self.hspeed = -self.hspeed

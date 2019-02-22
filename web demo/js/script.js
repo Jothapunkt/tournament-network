@@ -1,12 +1,14 @@
 var playerLeft
 var playerRight
 
+var scoreLeft = 0
+var scoreRight = 0
+
 var ball = Ball()
+var ball2 = SecondBall()
 
 var paused = false
 
-var scoreLeft = 0
-var scoreRight = 0
 var lastScore = "left"
 
 var scoreDraw = scoreDrawer()
@@ -16,7 +18,15 @@ function startGame() {
 		ball.kill()
 	}
 	
+	if (typeof ball2 != "undefined") {
+		ball2.kill()
+	}
+	
 	ball = Ball()
+	ball2 = SecondBall()
+	
+	ball2.color = "SteelBlue"
+	
 	scoreLeft = 0
 	scoreRight = 0
 	

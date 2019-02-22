@@ -114,3 +114,31 @@ function Ball() {
 	
 	return obj
 }
+
+function SecondBall() {
+	var obj = Ball()
+	
+	obj.color = "DodgerBlue";
+	obj.resetBall = function() {
+		console.log("Resetting second ball. Score: " + scoreLeft + " - " + scoreRight)
+		obj.ticksSinceReset = 0
+		
+		obj.x = 0.5 * window["canvasWidth"]
+		obj.y = 0.5 * window["canvasHeight"]
+		
+		obj.vspeed = 0.3 * obj.minSpeed
+		obj.hspeed = obj.minSpeed
+		
+		if (lastScore == "right") { obj.hspeed = -obj.hspeed }
+		
+		if (scoreLeft == 0 && scoreRight == 0) {
+			obj.hspeed = -obj.hspeed
+			console.log("Reversing ball speed!")
+		}
+	}
+	
+	obj.resetBall()
+	
+	return obj
+}
+

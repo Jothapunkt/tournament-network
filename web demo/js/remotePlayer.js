@@ -66,6 +66,10 @@ function RemotePlayer() {
 		inputs.push(ball.y/canvasHeight)
 		inputs.push(ball.hspeed)
 		inputs.push(ball.vspeed)
+		inputs.push(ball2.x/canvasWidth)
+		inputs.push(ball2.y/canvasHeight)
+		inputs.push(ball2.hspeed)
+		inputs.push(ball2.vspeed)
 		
 		if (playerLeft === obj) {
 			inputs.push(playerRight.y/canvasHeight)
@@ -83,6 +87,10 @@ function RemotePlayer() {
 		inputs.push(ball.y/canvasHeight)
 		inputs.push(-ball.hspeed)
 		inputs.push(ball.vspeed)
+		inputs.push((canvasWidth - ball2.x)/canvasWidth)
+		inputs.push(ball2.y/canvasHeight)
+		inputs.push(-ball2.hspeed)
+		inputs.push(ball2.vspeed)
 		
 		if (playerLeft === obj) {
 			inputs.push(playerRight.y/canvasHeight)
