@@ -4,8 +4,8 @@ import copy
 
 class Mutator(object):
 	def __init__(self):
-		self.mutation_probability = 0.1
-		self.mutation_strength = 0.2
+		self.mutation_probability = 0.25
+		self.mutation_strength = 0.4
 	
 	def random_range(self, min, max):
 		return(min + (random() * (max - min)))

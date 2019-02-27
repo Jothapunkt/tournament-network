@@ -56,16 +56,17 @@ class RemotePlayer(object):
 		self.y = 0.5 * (self.board_height - self.height)
 		
 	def export_player(self):
-		print("Exporting player #" + str(self.id) + " with final score of " + str(self.score))
 		json_data = {}
 		json_data["score"] = self.score
 		json_data["inputs"] = self.controller.inputs
 		json_data["layers"] = self.controller.layers
 		json_data["generation"] = self.gen
 		
-		filename = "networks/" + str(self.score) + "_" + str(self.id) + ".network"
+		filename = "networks/" + str(self.score) + "_" + str(self.id) + "_" + str(math.floor(random() * 100000)) + ".network"
 		with open(filename, "w") as json_file:
 			json.dump(json_data, json_file)
+			
+		print("Exporting player #" + str(self.id) + " to file '" + filename + "'")
 			
 	def import_player(self, fname):
 		with open(fname, "r") as read_file:

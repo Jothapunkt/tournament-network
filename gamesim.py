@@ -81,7 +81,7 @@ class GameSim(object):
 		inputsRight.append(self.ball2.y / self.board_height)
 		inputsRight.append(-self.ball2.hspeed)
 		inputsRight.append(self.ball2.vspeed)
-		inputsRight.append(self.data.get("playerRight").y/self.board_height)
+		inputsRight.append(self.data.get("playerLeft").y/self.board_height)
 		
 		self.data.get("playerLeft").tick(inputsLeft)
 		self.data.get("playerRight").tick(inputsRight)
@@ -122,7 +122,7 @@ class GameSim(object):
 			return "right"
 	
 	def export_recording(self):
-		filename = "recordings/" + str(time.time()) + "_" + str(math.floor(random() * 100000)) + ".recording"
+		filename = "recordings/" + str(self.data.get("numberParries", 0)) + "_" + str(time.time()) + "_" + str(self.data.get("playerLeft").score) + "_" + str(self.data.get("playerRight").score) + "_" + str(math.floor(random() * 1000)) + ".recording"
 		with open(filename, "w") as json_file:
 			json.dump(self.recording, json_file)
 		return filename

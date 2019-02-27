@@ -8,8 +8,14 @@ import copy
 
 tournament = Tournament()
 
-fname = "networks/usable/" + "16384_51424.network"
+#File name
+fname = "networks/usable/" + "27118_49762_11315.network"
 
+#Number of tournaments in the series. Negative number for infinite tournaments
+rounds = -1
 
-tournament.import_tournament(fname, 12)
+winner = tournament.import_tournament(fname, 8)
 
+while(rounds != 0):
+	rounds -= 1
+	winner = tournament.continue_tournament(winner, 8)

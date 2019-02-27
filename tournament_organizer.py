@@ -33,7 +33,6 @@ class Tournament(object):
 		
 		for i in range(self.total_players):
 			p = RemotePlayer()
-			p.score = self.total_players
 			
 			self.players.append(p)
 			
@@ -54,15 +53,28 @@ class Tournament(object):
 		self.players.append(p)
 		while(len(self.players) < self.total_players):
 			self.players.append(self.mutate_player(p))
-			
+		
 		return self.play_tournament()
 	
 	#Creates a tournament of the base player passed and mutations of that player
 	def continue_tournament(self, base_player, rounds):
+		self.players = []
+		self.total_players = 2 ** rounds
+		self.matches_played = 0
 		
+		print("-- Continue Tournament -- ")
+		print("Total players: " + str(self.total_players))
 		
+		self.players.append(base_player)
+		while(len(self.players) < self.total_players):
+			self.players.append(self.mutate_player(base_player))
+		
+		return self.play_tournament()
 		
 	def play_tournament(self):
+		for pl in self.players:
+			pl.score += self.total_players
+		
 		#Non-final rounds
 		while (len(self.players) > 2): 
 			i = 0
@@ -91,6 +103,9 @@ class Tournament(object):
 			
 			winner = self.players[1]
 			second = self.players[0]
+			
+			second.score -= 1
+			
 			if (self.game.play_match(record=True) == "left"):
 				winner = self.players[0]
 				second = self.players[1]
