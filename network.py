@@ -4,7 +4,7 @@ from random import *
 class Network(object):
 	def __init__(self):
 		self.inputs = []
-		self.inputLength = 10
+		self.inputLength = 9
 		self.layers = []
 	
 	def createNet(self, *layerLengths):

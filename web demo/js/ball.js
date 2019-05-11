@@ -6,6 +6,7 @@ function Ball() {
 	obj.minSpeed = 4
 	obj.speedCapUpper = 100
 	obj.speedCapLower = 1
+	obj.predictY = 0
 	
 	obj.color = "white";
 	
@@ -33,9 +34,9 @@ function Ball() {
 		
 		if (lastScore == "right") { obj.hspeed = -obj.hspeed }
 		
+		obj.predict()
+		
 	}
-	
-	obj.resetBall()
 	
 	obj.draw = function() {
 		ctx.save();
@@ -43,7 +44,52 @@ function Ball() {
 		ctx.beginPath();
 		ctx.arc(obj.x,obj.y,obj.radius,0,2 * Math.PI);
 		ctx.fill();
-		ctx.restore();
+		
+		/*ctx.beginPath();
+		ctx.arc(obj.predictX,obj.predictY,obj.radius,0,2 * Math.PI);
+		ctx.fill();
+		ctx.restore();*/
+	}
+	
+	obj.predict = function() {
+		startX = obj.x
+		startY = obj.y
+		startHspeed = obj.hspeed
+		startVspeed = obj.vspeed
+		
+		while(obj.x > 0 && obj.x < window["canvasWidth"]) {
+			targetX = obj.x + obj.hspeed
+			targetY = obj.y + obj.vspeed
+			
+			targetX = obj.x + obj.hspeed
+			targetY = obj.y + obj.vspeed
+			
+			obj.hspeed *= obj.acceleration
+			obj.vspeed *= obj.acceleration
+			
+			if (targetY < 0) {
+				obj.y = 0
+				obj.vspeed = -obj.vspeed
+			} else if(targetY > window["canvasHeight"]) {
+				obj.y = window["canvasHeight"]
+				obj.vspeed = -obj.vspeed
+			} else {
+				obj.y = targetY
+			}
+			
+			obj.x = targetX
+		}
+		
+		if (obj.x < 0) { obj.x = 0 }
+		if (obj.x > window["canvasWidth"]) { obj.x = window["canvasWidth"] }
+		
+		obj.predictX = obj.x
+		obj.predictY = obj.y
+		
+		obj.hspeed = startHspeed
+		obj.vspeed = startVspeed
+		obj.x = startX
+		obj.y = startY
 	}
 	
 	obj.move = function() {
@@ -74,6 +120,8 @@ function Ball() {
 					obj.vspeed = obj.vspeed * (obj.vspeed > 0 ? 0.5 : 1.5)
 				}
 				
+				obj.predict()
+				
 			} else if (targetX < 0) {
 				scoreRight++
 				lastScore = "right"
@@ -85,12 +133,14 @@ function Ball() {
 			if (targetY + obj.radius >= playerRight.y && targetY - obj.radius <= playerRight.y + playerRight.height) {//Did the ball hit the right paddle?
 				obj.x = window["canvasWidth"] - playerRight.width
 				obj.hspeed = -obj.hspeed
-				
+								
 				if (playerRight.lastMove == "up") {
 					obj.vspeed = obj.vspeed * (obj.vspeed < 0 ? 0.5 : 1.5)
 				} else if (playerRight.lastMove == "down") {
 					obj.vspeed = obj.vspeed * (obj.vspeed > 0 ? 0.5 : 1.5)
 				}
+				
+				obj.predict()
 			} else if (targetX > window["canvasWidth"]) {
 				scoreLeft++
 				lastScore = "left"
@@ -111,6 +161,8 @@ function Ball() {
 		if (obj.vspeed > -obj.speedCapLower && obj.vspeed <= 0) { obj.vspeed = -obj.speedCapLower }
 		if (obj.vspeed < obj.speedCapLower && obj.vspeed > 0) { obj.vspeed = obj.speedCapLower }
 	}
+	
+	obj.resetBall()
 	
 	return obj
 }
@@ -135,6 +187,8 @@ function SecondBall() {
 			obj.hspeed = -obj.hspeed
 			console.log("Reversing ball speed!")
 		}
+		
+		obj.predict()
 	}
 	
 	obj.resetBall()

@@ -69,7 +69,6 @@ class GameSim(object):
 		inputsLeft.append(self.ball2.y / self.board_height)
 		inputsLeft.append(self.sig(self.ball2.hspeed))
 		inputsLeft.append(self.sig(self.ball2.vspeed))
-		inputsLeft.append(self.data.get("playerRight").y/self.board_height)
 		
 		inputsRight = []
 		inputsRight.append(self.data.get("playerRight").y/self.board_height)
@@ -81,7 +80,6 @@ class GameSim(object):
 		inputsRight.append(self.ball2.y / self.board_height)
 		inputsRight.append(-self.ball2.hspeed)
 		inputsRight.append(self.ball2.vspeed)
-		inputsRight.append(self.data.get("playerLeft").y/self.board_height)
 		
 		self.data.get("playerLeft").tick(inputsLeft)
 		self.data.get("playerRight").tick(inputsRight)

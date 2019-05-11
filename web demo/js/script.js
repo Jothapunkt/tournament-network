@@ -72,6 +72,15 @@ function spawnPlayerLeft() {
 	playerLeft.alignLeft()
 }
 
+function spawnProgrammedPlayerLeft() {
+	if (typeof playerLeft != "undefined") {
+		playerLeft.kill()
+	}
+	
+	playerLeft = ProgrammedPlayer()
+	playerLeft.alignLeft()
+}
+
 function startImportRight() {
 	if (typeof playerRight != "undefined") {
 		playerRight.kill()
@@ -94,9 +103,14 @@ function spawnPlayerRight() {
 	playerRight.alignRight()
 }
 
-function debug() {
+function spawnProgrammedPlayerRight() {
+	if (typeof playerRight != "undefined") {
+		playerRight.kill()
+	}
 	
+	playerRight = ProgrammedPlayer()
+	playerRight.alignRight()
 }
 
 spawnPlayerLeft()
-spawnPlayerRight()
+spawnProgrammedPlayerRight()
